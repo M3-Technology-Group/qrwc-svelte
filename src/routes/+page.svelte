@@ -1,9 +1,6 @@
 <script lang="ts">
 	let { data } = $props();
-	const toggleButton = data.qrwc?.useButton("testControls", "toggleButton");
+	const textComboBox = data.qrwc?.useControl("testControls", "textComboBox");
 </script>
 
-<button
-  style="background-color: {toggleButton?.state ? 'green' : '#777'};"
-  onclick={() => toggleButton?.toggle()}>Toggle!
-</button>
+{textComboBox?.rawControl?.Type}

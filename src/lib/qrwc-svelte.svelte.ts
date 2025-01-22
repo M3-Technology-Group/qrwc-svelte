@@ -8,7 +8,7 @@ import { fetchButton, type ButtonControl } from "./controls/button.svelte.js";
 import { fetchTrigger, type TriggerControl } from "./controls/trigger.svelte.js";
 import { fetchKnob, type KnobControl } from "./controls/knob.svelte.js";
 import { fetchText, type TextControl } from "./controls/text.svelte.js";
-import { fetchComboBox } from "./controls/combo-box.svelte.js";
+import { fetchComboBox, type TextComboBoxControl } from "./controls/combo-box.svelte.js";
 import { getQrwcComponentList, getQrwcControlList } from "./controls/global-metadata.svelte.js";
 
 /**
@@ -148,13 +148,19 @@ export class QrwcSvelte extends ConnectionManager {
     public useText = (component:string, control:string):TextControl => fetchText(component, control, this.qrwc, this.subscriber);
 
     /**
-     * @note This method is not yet implemented.
+     * Fetch and subscribe to a combo box control in a Q-SYS design.
+     * 
+     * This will return a control object that can be used in a Svelte component.
+     * 
+     * String, Option, and can be set to command the control.
+     * Choices array is also reactive and will by dynamically updated if changed on the core.
+     * Choices array is read-only and cannot be set.
      * 
      * @param component 
      * @param control 
-     * @returns 
+     * @returns {TextComboBoxControl} object that can be used in a Svelte component.
      */
-    public useComboBox = (component:string, control:string):unknown => fetchComboBox(component, control, this.qrwc, this.subscriber);
+    public useComboBox = (component:string, control:string):TextComboBoxControl => fetchComboBox(component, control, this.qrwc, this.subscriber);
 
     /**
      * Get the list of components in the current Q-SYS design.

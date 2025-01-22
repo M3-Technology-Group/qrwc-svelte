@@ -2,6 +2,8 @@
 
 **Cybernetically enhanced Q-SYS UIs**
 
+Extend the functionality of the @q-sys/qrwc library with the power of Svelte 5 Runes. This library provides a simple and easy to use interface for lifecycle management and controlling Q-SYS components in a Svelte application.
+
 Note: This library is **not** sponsored, supported or endorsed by QSC, LLC. Q-SYS can not provide support for this library, or any issues that may arise from its use.
 
 ## Features
@@ -138,6 +140,7 @@ For the example above, the `state` control of the flipflop can be accessed with 
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
   const flipFlopState = qrwcSvelte.useButton("Flip-Flop", "state");
+</script>
 ```
 
 ## Connection Options
@@ -184,18 +187,17 @@ Only the components with the code names `testControls` and `myOtherControl` will
 Optionally a filter function can be provided to the control filter. The filter function should return a boolean value based on the control. If the function returns `true`, the control will be subscribed to. If the function returns `false`, the control will be ignored.
 
 ```typescript
-
 const opts: ConnectionOptions = {
-			...
-			controlFilter: (ctl) => ctl.Name.match(/^testControl[0-9A-Fa-f]{2}/gm) !== null,
-		};
+		...
+		controlFilter: (ctl) => ctl.Name.match(/^testControl[0-9A-Fa-f]{2}/gm) !== null,
+};
 ```
 
 ## SvelteKit
 
 While the QRWC library can be run in either client side or server side runtimes, the QRWC-Svelte library is not compatible with server side rendering. The QRWC-Svelte library expects to be run in the client's browser. 
 
-It is generally easier and faster to use vanilla Svelte without SvelteKit, as the extra featured provided by SvelteKit are not usually necessary for an embedded A/V UI. However, if you wish to use SvelteKit, you will need to make sure that the QRWC-Svelte library is only run in client side code.
+It is generally easier and faster to use vanilla Svelte without SvelteKit, as the extra features provided by SvelteKit are not usually necessary for an embedded A/V UI (Routing is not helpful on a hardware touch screen). However, if you wish to use SvelteKit, you will need to make sure that the QRWC-Svelte library is only run in client side code.
 
 It is recommended that the QRWC-Svelte instance is created in a global layout script and provided to all child components. In this layout script, pre-rendering and SSR should be disabled as well.
 
