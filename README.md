@@ -53,14 +53,14 @@ Create a new file in the `lib` directory called `svelte-qrwc.ts`:
 ```typescript
 import { QrwcSvelte } from 'qrwc-svelte';
 
-// Create a new instance of QrwcSvelte and connect to a core at 172.18.1.82
+// Create a new instance of QrwcSvelte and connect to a core at 192.168.1.100
 export const qrwcSvelte = new QrwcSvelte("192.168.1.100");
 ```
 Replace `192.168.1.100` with the IP address or hostname of your Q-SYS Core.
 Additional connection options, including redundant core support is available by passing in a `ConnectionOptions` object instead of a string.
 
 #### Checking Connection Status
-You wil need to make sure that QrwcSvelte is connected to the core before using any components. QrwcSvelte will automatically attempt to connect to the core when it is created. 
+You will need to make sure that QrwcSvelte is connected to the core before using any components. QrwcSvelte will automatically attempt to connect to the core when it is created. 
 
 QrwcSvelte provides the property `isConnected` as a `$state<boolean>` rune that can be used to check the connection status.
 

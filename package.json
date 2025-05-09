@@ -1,6 +1,6 @@
 {
 	"name": "qrwc-svelte",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"license": "Apache-2.0",
 	"scripts": {
 		"dev": "vite dev",
@@ -34,7 +34,7 @@
 		}
 	},
 	"peerDependencies": {
-		"@q-sys/qrwc": "^0.2.0-alpha",
+		"@q-sys/qrwc": "^0.3.0-alpha",
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
