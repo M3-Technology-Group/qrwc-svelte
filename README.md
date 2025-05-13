@@ -185,12 +185,12 @@ By default teh QRWC-Svelte library will attempt to connect to the core at the pr
 
 ```typescript
 const opts: ConnectionOptions = {
-			coreIp: "192.168.1.100",	// IP/hostname of the core
-			redundantCoreIp: undefined, // IP/hostname of the redundant core if present
-			secure: false,				// true for https/wss, false for http/ws (default)
-			poleInterval: 35,			// Polling interval in milliseconds (default 35)
-			controlFilter: undefined,	// Filter for control events (default undefined)
-		};
+  coreIp: "192.168.1.100",    // IP/hostname of the core
+  redundantCoreIp: undefined, // IP/hostname of the redundant core if present
+  secure: false,              // true for https/wss, false for http/ws (default)
+  poleInterval: 35,           // Polling interval in milliseconds (default 35)
+  controlFilter: undefined,   // Filter for control events (default undefined)
+};
 ```
 
 ### Core IP and Redundant Core IP

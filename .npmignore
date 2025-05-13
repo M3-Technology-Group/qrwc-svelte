@@ -14,5 +14,3 @@ docs/
 examples/
 .svelte-kit
 .vscode
-public/
-test_project/
