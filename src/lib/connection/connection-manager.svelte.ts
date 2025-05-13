@@ -3,7 +3,7 @@ import type { Qrwc } from "@q-sys/qrwc"
 import { qrwcEvents } from '@q-sys/qrwc/dist/constants'
 import { createQrwcInstance } from './qrwc-factory.js'
 import type { ControlDecorator } from "@q-sys/qrwc/dist/managers/components/ControlDecorator.js";
-import type { IComponentFilter, IComponentsGetResult } from "@q-sys/qrwc/dist/index.interface.js";
+import type { IComponent, IComponentFilter } from "@q-sys/qrwc/dist/index.interface.js";
 
 /**
  * Handles the connection to the QRWC WebSocket and manages the connection state.
@@ -23,7 +23,7 @@ export class ConnectionManager {
     protected connectionAttempts = $state<number>(0);
     protected connectionState = $state<ConnectionEvent>('disconnected');
     private onInitialValues: (arg0:Qrwc)=>void;
-    private onComponentUpdate: (arg0:Record<string,ControlDecorator>)=>void;
+    private onComponentUpdate: (arg0:IComponent)=>void;
 
     /**
      * Create a new QRWC Instance and connect to the QRWC WebSocket
@@ -32,7 +32,7 @@ export class ConnectionManager {
      * @param onInitialValues - Callback function to be invoked when the initial values are received from the QRWC WebSocket
      * @param onComponentUpdate - Callback function to be invoked when a control is updated
      */
-    constructor(options: ConnectionOptions, onInitialValues: (arg0:Qrwc)=>void, onComponentUpdate: (arg0:Record<string,ControlDecorator>)=>void) {
+    constructor(options: ConnectionOptions, onInitialValues: (arg0:Qrwc)=>void, onComponentUpdate: (arg0:IComponent)=>void) {
         this.options = options;
         this.onInitialValues = onInitialValues;
         this.onComponentUpdate = onComponentUpdate;
@@ -125,7 +125,7 @@ export class ConnectionManager {
             }
     
             //subscribe to the controls updated event
-            this.qrwc.on(qrwcEvents.controlsUpdated, (event) => this.onComponentUpdate(event as Record<string,ControlDecorator>));
+            this.qrwc.on(qrwcEvents.controlsUpdated, (event) => this.onComponentUpdate(event as IComponent));
     
             this.qrwc.on(qrwcEvents.startComplete, () => {
                 this.onInitialValues(this.qrwc!);
@@ -138,7 +138,7 @@ export class ConnectionManager {
                 let componentFilter:IComponentFilter;
 
                 if(Object.prototype.toString.call(this.options.controlFilter) === '[object Array]'){
-                    componentFilter = (componentId:IComponentsGetResult) => {
+                    componentFilter = (componentId:IComponent) => {
                         const filter = this.options.controlFilter as string[];
                         return filter.includes(componentId.ID);
                     }

@@ -1,4 +1,3 @@
-
 export type { ConnectionOptions, ConnectionEvent } from './types/connection-options.svelte.js'
 export type { ControlDirection, ControlType } from './connection/control-data-parser.svelte.js'
 export type { ControlMetadata, GenericControl } from './controls/base-control.svelte.js'
@@ -8,3 +7,4 @@ export type { KnobControl } from './controls/knob.svelte.js'
 export type { TextControl } from './controls/text.svelte.js'
 export type { TextComboBoxControl } from './controls/combo-box.svelte.js'
 export { QrwcSvelte } from './qrwc-svelte.svelte.js'
+export { Component } from './components/component.js'

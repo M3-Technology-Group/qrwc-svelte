@@ -27,7 +27,7 @@ export function getDirectionProperty(
 	}
 }
 
-export const allControlTypes = ['Boolean', 'Integer', 'Float', 'Text', 'Trigger', 'Time'] as const;
+export const allControlTypes = ['Boolean', 'Integer', 'Float', 'Text', 'Trigger', 'Time', 'Array'] as const;
 export type ControlType = (typeof allControlTypes)[number] | undefined;
 
 /**

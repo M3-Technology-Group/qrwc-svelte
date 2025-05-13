@@ -24,12 +24,14 @@ export function fetchComboBox(component:string, control:string, qrwcInstance:Qrw
     const ctl = fetchControl(component, control,qrwcInstance, subscriber, (update) => {
         choices = update.getMetaProperty("Choices") as unknown as string[] ?? [];
     });
-    if(ctl.Type !== "Text") console.error("Attempted to use a text input on a non-text control");
+    if(ctl.Type !== "Text") 
+        console.error(`Attempted to use a ComboBox on a non-text control: ${control} in component ${component} sent type: ${ctl.Type}`);
 
     let choices = $state<string[]>(ctl.rawControl?.getMetaProperty("Choices") as unknown as string[] ?? []);
 
-    if(choices.length === 0)
-        console.warn(`ComboBox ${component}, ${control} has no choices`);
+    //This warning has nto bene reliable, so it has been removed.
+    // if(choices.length === 0)
+    //     console.warn(`ComboBox ${component}, ${control} has no choices`);
 
     const setText = (val:string) => {
         if(ctl.Direction === "Read Only") {

@@ -25,7 +25,9 @@ export const qrwcSvelte = new QrwcSvelte("core-ip-or-hostname");
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const toggleButton = qrwcSvelte.useButton("testControls", "toggleButton");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const toggleButton = TestControlsComponent.useButton("toggleButton");
 </script>
 
 <button
@@ -43,7 +45,9 @@ This will toggle the button state between `true` and `false` when clicked. The b
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const toggleButton = qrwcSvelte.useButton("testControls", "toggleButton");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const toggleButton = TestControlsComponent.useButton("toggleButton");
 </script>
 
 <button
@@ -67,7 +71,9 @@ Each button will set the state of the button to `true` or `false` respectively. 
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const momentaryButton = qrwcSvelte.useButton("testControls", "momentaryButton");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const momentaryButton = TestControlsComponent.useButton("momentaryButton");
 </script>
 
 <button
@@ -87,7 +93,9 @@ In addition to the `pointerdown` and `pointerup` events, the `pointerout` event 
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const triggerButton = qrwcSvelte.useTrigger("testControls", "triggerButton");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const triggerButton = TestControlsComponent.useTrigger("triggerButton");
 </script>
 
 <button onclick={() => triggerButton.trigger()}>Trigger!</button>

@@ -1,4 +1,5 @@
 import type { Qrwc } from '@q-sys/qrwc';
+import type { IComponent } from '@q-sys/qrwc/dist/index.interface.js';
 import type { ControlDecorator } from '@q-sys/qrwc/dist/managers/components/ControlDecorator.js';
 
 export class ControlSubscriber {
@@ -78,51 +79,49 @@ export class ControlSubscriber {
 		delete this.subscriptionIdTable[subscriptionId];
 	}
 
-    /**
-     * Process an update event from QRWC, notifies all subscribers of the updated control
-     * 
-     * @param event Update Event from QRWC
-     */
-	public processControlEvent(event: Record<string, ControlDecorator>) {
-		for (const key in event) {
-			if (!this.subscriptions.hasOwnProperty(key)) continue;
+	/**
+	 * Process an update event from QRWC, notifies all subscribers of the updated control
+	 *
+	 * @param event Update Event from QRWC
+	 */
+	public processControlEvent(component: IComponent) {
+		if (!this.subscriptions.hasOwnProperty(component.ID)) return;
+		const sub = this.subscriptions[component.ID];
 
-			this.subscriptions[key].forEach((sub) => {
-				if (event[key].Name === sub.control) {
-					sub.updater(event[key]);
+		sub.forEach((sub) => {
+			if (component.Controls?.hasOwnProperty(sub.control)) {
+				sub.updater(component.Controls[sub.control]);
+			}
+		});
+	}
+
+	/**
+	 * Propagate initial values to all subscriptions
+	 * This is necessary because the initial values of the controls are not available
+	 * until the startComplete event is fired
+	 *
+	 * @param qrwc QRWC instance that is connected and started
+	 */
+	public propagateInitialValues(qrwc: Qrwc): void {
+		if (!qrwc) return;
+		for (const key in this.subscriptions) {
+			const value = this.subscriptions[key];
+
+			value.forEach((sub) => {
+				try {
+					const test = qrwc.components[sub.component];
+					const controlData = qrwc.components[sub.component]?.Controls?.[sub.control];
+					if (!controlData) {
+						console.error(`QRWC Control ${sub.control} not found in component ${sub.component}`);
+						return;
+					}
+					sub.updater(controlData);
+				} catch {
+					console.error(`QRWC: Error updating subscription ${sub.id}`);
 				}
 			});
 		}
 	}
-
-    /**
-     * Propagate initial values to all subscriptions
-     * This is necessary because the initial values of the controls are not available
-     * until the startComplete event is fired
-     * 
-     * @param qrwc QRWC instance that is connected and started
-     */
-    public  propagateInitialValues(qrwc:Qrwc): void {
-        if(!qrwc) return;
-        for(const key in this.subscriptions){
-            const value = this.subscriptions[key];
-    
-            value.forEach(sub => {
-                try {
-                    const controlData = qrwc.components[sub.component]?.[sub.control];
-                    if(!controlData) {
-                        console.error(`QRWC Control ${sub.control} not found in component ${sub.component}`);
-                        return;
-                    }
-                    sub.updater(controlData);
-                }
-                catch
-                {
-                    console.error(`QRWC: Error updating subscription ${sub.id}`);
-                }
-            });
-        }
-    }
 
 	/**
 	 * Flush all subscriptions, this should only be called when a user desired to dispose of the wrapper.

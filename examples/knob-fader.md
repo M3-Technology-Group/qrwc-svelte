@@ -27,7 +27,9 @@ export const qrwcSvelte = new QrwcSvelte("core-ip-or-hostname");
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const fader = qrwcSvelte.useKnob("testControls", "fader");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const fader = TestControlsComponent.useKnob("fader");
 </script>
 
 <input type="range" bind:value={fader.position} min="0" max="1" step="0.01"/>
@@ -54,7 +56,9 @@ The optional style block is used to make the fader vertical.
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const fader = qrwcSvelte.useKnob("testControls", "fader");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const fader = TestControlsComponent.useKnob("fader");
 </script>
 
 
@@ -77,7 +81,9 @@ The string property of the fader can be used to display the current value of the
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const numericEntry = qrwcSvelte.useKnob("testControls", "int");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const numericEntry = TestControlsComponent.useKnob("int");
 </script>
 
 <input 
@@ -96,7 +102,9 @@ This will create a numeric entry field that can be controlled by the user or by 
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const panKnob = qrwcSvelte.useKnob("testControls", "panKnob");
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const panKnob = TestControlsComponent.useKnob("panKnob");
 </script>
 
 <input 
@@ -109,9 +117,45 @@ This will create a numeric entry field that can be controlled by the user or by 
 
 <button
   style="background-color: {panKnob.value === 0 ? 'green' : ''};"
-  on:click={() => panKnob.value = 0}
+  onclick={() => panKnob.value = 0}
   >Center
 </button>
 ```
 
 Pan controls are centered when the value is 0. Through the magic of runes, the button logic is independent of the slider, yet both will respond to changes made by each other and any changes made elsewhere (or by other UIs) on the Core.
+
+## Fader with Increment and Decrement buttons
+```svelte
+<script lang="ts">
+  import { qrwcSvelte } from "./lib/qrwc-svelte";
+
+  const gainComponent = qrwcSvelte.useComponent("GainWithRamp");
+
+  const fader = gainComponent.useKnob("gain");
+  const increment = gainComponent.useButton("stepper.increase");
+  const decrement = gainComponent.useButton("stepper.decrease");
+</script>
+
+<!-- Decrement button -->
+<button
+  onpointerdown={() => (decrement.state = true)}
+  onpointerup={() => (decrement.state = false)}
+  onpointerleave={() => (decrement.state = false)}
+  oncontextmenu={(e) => e.preventDefault()}
+>Ramp Down</button>
+
+<!-- Actual fader -->
+<input type="range" bind:value={fader.position} min="0" max="1" step="0.01"/>
+
+<!-- Increment button -->
+<button
+  onpointerdown={() => (increment.state = true)}
+  onpointerup={() => (increment.state = false)}
+  onpointerleave={() => (increment.state = false)}
+  oncontextmenu={(e) => e.preventDefault()}
+>Ramp Up</button>
+```
+
+In this example, we are using multiple controls within the same component, the fader is the same as the example above.
+However, the increment and decrement buttons require a little extra attention as they need to transmit both press and release (momentary buttons).
+Both `pointerdown` and `pointerup` up events are necessary to capture both the press and release, but the `pointerleave` event is also necessary as if a user's mouse or finger leaves the button prior to releasing the button the button would remain latched as pressed. By setting the button's state to false on `pointerleave` we cancel the ramp if the user cursor or finger leaves the bounds of the button. Finally, we need to cancel the right-click context menu on touch devices as we don't want it showing when long pressing on this button.

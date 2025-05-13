@@ -3,13 +3,9 @@ import { ConnectionManager } from "./connection/connection-manager.svelte.js";
 import type { ConnectionEvent, ConnectionOptions } from "./types/connection-options.svelte.js";
 import type { ControlDecorator } from "@q-sys/qrwc/dist/managers/components/ControlDecorator.js";
 import { ControlSubscriber } from "./connection/control-subscriber.svelte.js";
-import { fetchControl, type GenericControl } from "./controls/base-control.svelte.js";
-import { fetchButton, type ButtonControl } from "./controls/button.svelte.js";
-import { fetchTrigger, type TriggerControl } from "./controls/trigger.svelte.js";
-import { fetchKnob, type KnobControl } from "./controls/knob.svelte.js";
-import { fetchText, type TextControl } from "./controls/text.svelte.js";
-import { fetchComboBox, type TextComboBoxControl } from "./controls/combo-box.svelte.js";
-import { getQrwcComponentList, getQrwcControlList } from "./controls/global-metadata.svelte.js";
+import { getQrwcComponentList } from "./controls/global-metadata.svelte.js";
+import { Component } from "./components/component.js";
+import type { IComponent } from "@q-sys/qrwc/dist/index.interface.js";
 
 /**
  * Svelte Wrapper for the @q-sys/qrwc library.
@@ -47,7 +43,7 @@ export class QrwcSvelte extends ConnectionManager {
 
         super(options, 
             (qrwc: Qrwc) => {this.subscriber.propagateInitialValues(qrwc)}, 
-            (controlData: Record<string, ControlDecorator>) => {this.subscriber.processControlEvent(controlData)});
+            (controlData: IComponent) => {this.subscriber.processControlEvent(controlData)});
     }
     
 
@@ -74,93 +70,17 @@ export class QrwcSvelte extends ConnectionManager {
      */
     public connectionAttemptCount = $derived<number>(this.connectionAttempts);
 
-    /**
-     * Fetch and subscribe to a generic component in a Q-SYS design. 
-     * This should only be used for components that do not have a specific
-     * use method defined by this library (EG: Buttons, Knobs, Text).
-     * 
-     * Reactive String, Position and Value properties are returned.
-     * If the control subscribed to does not support one of these properties,
-     * the property will be left as undefined.
-     * 
-     * An error may be thrown if string, position or value is set on a control
-     * that does not support that property.
-     * 
-     * @param component Code Name of the component in Q-SYS Designer. 
-     * @param control Control name inside the component to use.
-     * @returns {GenericControl} object that can be used in a Svelte component.
-     */
-    public useControl = (component:string, control:string):GenericControl => fetchControl(component, control, this.qrwc, this.subscriber);
 
     /**
-     * Fetch and Subscribe to a Button control in a Q-SYS design.
-     * This can be use with Monetary or Toggle buttons.
+     * Fetch a specific component in the current Q-SYS design.
+     * This will return a component instance that provides metadata and access to controls within the component.
+     * Controls within the component can be fetched using the appropriate use method.
      * 
-     * State is reactive and provides feedback, state can be set to command the control.
-     * 
-     * @param component Code Name of the component in Q-SYS Designer. 
-     * @param control Control name inside the component to use.
-     * @returns {ButtonControl} object that can be used in a Svelte component.
+     * @param componentId ID of the component to use. This is the "Code Name" under Script Access in Q-SYS Designer
+     * @returns component instance that provides metadata and access to controls within the component.
+     * @throws {Error} If the component does not exist in the Q-SYS design or is excluded by the control filter.
      */
-    public useButton = (component:string, control:string):ButtonControl => fetchButton(component, control, this.qrwc, this.subscriber);
-
-    /**
-     * Fetch a Trigger button control in a Q-SYS design.
-     * 
-     * Trigger buttons are one-way and don't provide feedback.
-     * Trigger controls only provide a trigger method and control metadata.
-     * 
-     * @param component Code Name of the component in Q-SYS Designer. 
-     * @param control Control name inside the component to use.
-     * @returns {TriggerControl} object that can be used in a Svelte component.
-     */
-    public useTrigger = (component:string, control:string):TriggerControl => fetchTrigger(component, control, this.qrwc, this.subscriber);
-
-    /**
-     * Fetch and Subscribe to a Knob control in a Q-SYS design.
-     * This can be used with Float, Integer, and Time controls. 
-     * This includes: faders, gains, frequency controls, pans, etc.
-     * 
-     * String includes applicable units (db, Hz, etc).
-     * Position is a float from 0-1.
-     * Value is the numeric value of the control.
-     * String, position and Value are all reactive and can be set to command the control.
-     * 
-     * Min an Max values are provided for Value and String.
-     * 
-     * @param component Code Name of the component in Q-SYS Designer. 
-     * @param control Control name inside the component to use.
-     * @returns { KnobControl } object that can be used in a Svelte component.
-     */
-    public useKnob = (component:string, control:string):KnobControl => fetchKnob(component, control, this.qrwc, this.subscriber);
-
-    /**
-     * Fetch and Subscribe to a Text control in a Q-SYS design.
-     * 
-     * This can be used with any text control in Q-SYS.
-     * 
-     * String is reactive and can be set to command the control.
-     * 
-     * @param component Code Name of the component in Q-SYS Designer. 
-     * @param control Control name inside the component to use.
-     * @returns { TextControl } object that can be used in a Svelte component.
-     */
-    public useText = (component:string, control:string):TextControl => fetchText(component, control, this.qrwc, this.subscriber);
-
-    /**
-     * Fetch and subscribe to a combo box control in a Q-SYS design.
-     * 
-     * This will return a control object that can be used in a Svelte component.
-     * 
-     * String, Option, and can be set to command the control.
-     * Choices array is also reactive and will by dynamically updated if changed on the core.
-     * Choices array is read-only and cannot be set.
-     * 
-     * @param component 
-     * @param control 
-     * @returns {TextComboBoxControl} object that can be used in a Svelte component.
-     */
-    public useComboBox = (component:string, control:string):TextComboBoxControl => fetchComboBox(component, control, this.qrwc, this.subscriber);
+    public useComponent = (componentId:string):Component => new Component(componentId, this.qrwc, this.subscriber);
 
     /**
      * Get the list of components in the current Q-SYS design.
@@ -171,15 +91,6 @@ export class QrwcSvelte extends ConnectionManager {
      */
     public getComponentList = ():string[] => getQrwcComponentList(this.qrwc);
 
-    /**
-     * Get the list of controls in a specific component in the current Q-SYS design.
-     * Only returns controls that have external script access, and are not excluded by a control filter
-     * passed into this wrapper instance.
-     * 
-     * @param componentId Code Name of the component in Q-SYS Designer.
-     * @returns Array of control names in the specified component. Empty array if the component does not exist.
-     */
-    public getControlList = (componentId: string):string[] => getQrwcControlList(this.qrwc, componentId);
 
     /**
      * Manually disconnect the QRWC WebSocket, and no longer attempt to reconnect.

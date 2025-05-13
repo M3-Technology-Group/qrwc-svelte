@@ -28,7 +28,9 @@ export const qrwcSvelte = new QrwcSvelte("core-ip-or-hostname");
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const cameraImage = qrwcSvelte.useText("USB_Video_Bridge_NickPs-NV-32", "jpeg.data");
+  const videoBridgeComponent = qrwcSvelte.useComponent("USB_Video_Bridge_NickPs-NV-32");
+
+  const cameraImage = videoBridgeComponent.useText("jpeg.data");
 
   let jpegData = $derived(JSON.parse(cameraImage.string).IconData as string);
 

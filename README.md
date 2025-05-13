@@ -80,7 +80,21 @@ QrwcSvelte provides the property `isConnected` as a `$state<boolean>` rune that 
 
 #### Using Q-SYS Controls
 
-Q-SYS Controls are used by fetching the control from the QrwcSvelte instance with the appropriate use method. 
+There are two steps to use a Q-SYS control.
+
+1. Instantiate the component using useComponent method
+
+```typescript
+//connected qrwc svelte instance
+import { qrwcSvelte } from "./lib/qrwc-svelte";
+
+const myComponent = qrwcSvelte.useComponent('my_component')
+```
+
+2. Fetch any controls you desire to use form that component
+```typescript
+const myButton = myComponent.useButton("myButton")
+```
 
 For example, to use a button control with the component name `testControls` and control name `toggleButton`:
 create a file named `Button.svelte`:
@@ -88,7 +102,8 @@ create a file named `Button.svelte`:
 <script lang="ts">
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const toggleButton = qrwcSvelte.useButton("testControls", "toggleButton");
+  const testControlsComponent = qrwcSvelte.useComponent("testControls")
+  const toggleButton = testControlsComponent.useButton("toggleButton");
 </script>
 
 <button
@@ -126,22 +141,43 @@ All components that you wish to control with the QRWC-Svelte library must have t
 
 The `Code Name` property is used as the component name in the QRWC-Svelte library.
 
+This `Code Name` is the value passed into `useComponent`.
 
 Control names are used to reference individual controls inside of a component.
 Q-SYS Designer provides a way to view all the control names inside a component. From the `Tools` menu. select `View Component Controls Info...` to show all the control names in a component.
 
 ![Component Controls Info](./examples/assets/componentcontrols.png "Component Controls Info")
 
-For the example above, the `state` control of the flipflop can be accessed with the `useButton` method of a QRWC-Svelte instance.
+For the example above, the `state` control of the flipflop can be accessed with the `useButton` method of the component's instance.
 
 ```svelte
 <script lang="ts">
   //Shared QRWC-Svelte instance - see above
   import { qrwcSvelte } from "./lib/qrwc-svelte";
 
-  const flipFlopState = qrwcSvelte.useButton("Flip-Flop", "state");
+  //get the component instance
+  const flipFlopComponent = qrwcSvelte.useComponent("Flip-Flop")
+
+//get the button instance 
+  const flipFlopState = flipFlopComponent.useButton("state");
 </script>
+
+<button style="{toggleButton.state ? 'background-color: green;' : '' }" onclick={() => flipFlopState.toggle()}>Press</button>
 ```
+
+You can access as many controls as the component contains from a single component instance
+```svelte
+<script lang="ts">
+  import { qrwcSvelte } from "./lib/qrwc-svelte";
+  const flipFlopComponent = qrwcSvelte.useComponent("Flip-Flop")
+
+
+  const flipFlopState = flipFlopComponent.useButton("state");
+  const flipFlopOutLed = flipFlopComponent.useButton("out");
+</script>
+
+```
+
 
 ## Connection Options
 
@@ -252,7 +288,8 @@ At this point, you can use any Q-SYS controls in page components.
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
 	let { data } = $props();
-	const toggleButton = data.qrwc?.useButton("testControls", "toggleButton");
+	const testControlsComponent = data.qrwc!.useComponent("testControls");
+	const toggleButton = testControlsComponent.useButton("toggleButton");
 </script>
 
 <button

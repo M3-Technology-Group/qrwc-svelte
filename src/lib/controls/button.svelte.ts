@@ -20,7 +20,8 @@ export interface ButtonControl extends ControlMetadata {
 
 export function fetchButton(component:string, control:string, qrwcInstance:Qrwc | null, subscriber:ControlSubscriber): ButtonControl {
     const ctl = fetchControl(component, control,qrwcInstance, subscriber);
-    if(ctl.Type !== "Boolean") console.error("Attempted to use a toggle button on a non-boolean control");
+    if(ctl.Type !== "Boolean")
+        console.error(`Attempted to use a Button on a non-boolean control: ${control} in component ${component} sent type: ${ctl.Type}`);
 
     const toggle = () => {
         if(ctl.Direction === "Read Only") {
