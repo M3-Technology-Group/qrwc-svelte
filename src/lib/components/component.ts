@@ -12,9 +12,7 @@ import { fetchText } from '$lib/controls/text.svelte.js';
 import type { TextControl } from '$lib/controls/text.svelte.js';
 import { fetchTrigger } from '$lib/controls/trigger.svelte.js';
 import type { TriggerControl } from '$lib/controls/trigger.svelte.js';
-import type { Qrwc } from '@q-sys/qrwc';
-import type { IComponent } from '@q-sys/qrwc/dist/index.interface.js';
-
+import type { Qrwc, Component as IComponent} from '@q-sys/qrwc';
 
 /**
  * Instance of a component in the current Q-SYS design.

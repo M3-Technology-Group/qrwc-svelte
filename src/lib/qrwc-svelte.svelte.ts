@@ -1,11 +1,9 @@
-import type { Qrwc } from "@q-sys/qrwc";
+import type { Qrwc, Component as IComponent } from "@q-sys/qrwc";
 import { ConnectionManager } from "./connection/connection-manager.svelte.js";
 import type { ConnectionEvent, ConnectionOptions } from "./types/connection-options.svelte.js";
-import type { ControlDecorator } from "@q-sys/qrwc/dist/managers/components/ControlDecorator.js";
 import { ControlSubscriber } from "./connection/control-subscriber.svelte.js";
 import { getQrwcComponentList } from "./controls/global-metadata.svelte.js";
 import { Component } from "./components/component.js";
-import type { IComponent } from "@q-sys/qrwc/dist/index.interface.js";
 
 /**
  * Svelte Wrapper for the @q-sys/qrwc library.
