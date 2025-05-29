@@ -1,7 +1,6 @@
 import type { ConnectionOptions, ConnectionEvent } from '../types/connection-options.svelte.js';
-import type { Qrwc, IStartOptions, Component } from '@q-sys/qrwc';
+import type { Qrwc, IStartOptions } from '@q-sys/qrwc';
 import { createQrwcInstance } from './qrwc-factory.js';
-import type { IComponentState } from '@q-sys/qrwc/dist/index.interface.js';
 
 /**
  * Handles the connection to the QRWC WebSocket and manages the connection state.
@@ -19,8 +18,6 @@ export class ConnectionManager {
 
 	protected connectionAttempts = $state<number>(0);
 	protected connectionState = $state<ConnectionEvent>('disconnected');
-	private onInitialValues: (arg0: Qrwc) => void;
-	private onComponentUpdate: (arg0: Component) => void;
 
 	/**
 	 * Create a new QRWC Instance and connect to the QRWC WebSocket
@@ -29,14 +26,8 @@ export class ConnectionManager {
 	 * @param onInitialValues - Callback function to be invoked when the initial values are received from the QRWC WebSocket
 	 * @param onComponentUpdate - Callback function to be invoked when a control is updated
 	 */
-	constructor(
-		options: ConnectionOptions,
-		onInitialValues: (arg0: Qrwc) => void,
-		onComponentUpdate: (arg0: Component) => void
-	) {
+	constructor(options: ConnectionOptions) {
 		this.options = options;
-		this.onInitialValues = onInitialValues;
-		this.onComponentUpdate = onComponentUpdate;
 		this.connectToQrwc();
 	}
 
@@ -125,7 +116,7 @@ export class ConnectionManager {
 		let componentFilter: IStartOptions['componentFilter'] = undefined;
 		if (this.options.controlFilter) {
 			if (Object.prototype.toString.call(this.options.controlFilter) === '[object Array]') {
-				componentFilter = (componentId: IComponentState) => {
+				componentFilter = (componentId) => {
 					const filter = this.options.controlFilter as string[];
 					return filter.includes(componentId.ID);
 				};
@@ -140,9 +131,6 @@ export class ConnectionManager {
 		};
 
 		const qrwc = await createQrwcInstance(this.options.coreIp, opts, this.options.secure);
-
-		//subscribe to the controls updated event
-		qrwc.on('update', (component,control,state) => this.onComponentUpdate(component));
 
 		return qrwc;
 	}

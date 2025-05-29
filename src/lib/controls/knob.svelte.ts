@@ -1,6 +1,5 @@
-import type { Qrwc } from '@q-sys/qrwc';
+import type { Control, Qrwc } from '@q-sys/qrwc';
 import { fetchControl, type ControlMetadata } from './base-control.svelte.js';
-import type { ControlSubscriber } from '$lib/connection/control-subscriber.svelte.js';
 
 /**
  * Represents a knob control that can be used in a Svelte component.
@@ -28,19 +27,16 @@ export interface KnobControl extends ControlMetadata {
 }
 
 export function fetchKnob(
-	component: string,
-	control: string,
-	qrwcInstance: Qrwc | null,
-	subscriber: ControlSubscriber
+	control: Control
 ): KnobControl {
-	const ctl = fetchControl(component, control, qrwcInstance, subscriber);
+	const ctl = fetchControl(control);
 	if (ctl.Type !== 'Float' && ctl.Type !== 'Integer' && ctl.Type !== 'Time' && ctl.Type !== 'Array')
-		console.error(`Attempted to use a knob on a non-numeric control: ${control} in component ${component} sent type: ${ctl.Type}`);
+		console.error(`Attempted to use a knob on a non-numeric control: ${control.name} in component ${control.component.name} sent type: ${ctl.Type}`);
 
 	//Value
 	const setValue = (val: number) => {
 		if (ctl.Direction === 'Read Only') {
-			console.error(`Attempted to set a read-only control ${control} in component ${component}`);
+			console.error(`Attempted to set a read-only control ${control.name} in component ${control.component.name}`);
 			return;
 		}
 
@@ -52,7 +48,7 @@ export function fetchKnob(
 	//Position
 	const setPosition = (val: number) => {
 		if (ctl.Direction === 'Read Only') {
-			console.error(`Attempted to set a read-only control ${control} in component ${component}`);
+			console.error(`Attempted to set a read-only control ${control.name} in component ${control.component.name}`);
 			return;
 		}
 
@@ -63,7 +59,7 @@ export function fetchKnob(
 	//String
 	const setString = (val: string) => {
 		if (ctl.Direction === 'Read Only') {
-			console.error(`Attempted to set a read-only control ${control} in component ${component}`);
+			console.error(`Attempted to set a read-only control ${control.name} in component ${control.component.name}`);
 			return;
 		}
 
@@ -92,10 +88,10 @@ export function fetchKnob(
 			setValue(val);
 		},
 		get valueMin() {
-			return ctl.rawControl?.getMetaProperty('ValueMin') as number | undefined;
+			return ctl.rawControl?.state.ValueMin as number | undefined;
 		},
 		get valueMax() {
-			return ctl.rawControl?.getMetaProperty('ValueMax') as number | undefined;
+			return ctl.rawControl?.state.ValueMax as number | undefined;
 		},
 		get position() {
 			return position;
@@ -110,10 +106,10 @@ export function fetchKnob(
 			setString(val);
 		},
 		get stringMin() {
-			return ctl.rawControl?.getMetaProperty('StringMin') as string | undefined;
+			return ctl.rawControl?.state.StringMin as string | undefined;
 		},
 		get stringMax() {
-			return ctl.rawControl?.getMetaProperty('StringMax') as string | undefined;
+			return ctl.rawControl?.state.StringMax as string | undefined;
 		}
 	};
 }

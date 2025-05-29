@@ -1,4 +1,6 @@
 <script lang="ts">
+	import HiddenControl from './hidden-control.svelte';
+
 	let { data } = $props();
 	const routingComponent = data.qrwc!.useComponent('TestControls');
 
@@ -11,6 +13,8 @@
 	const textBox = routingComponent.useText('TextBox');
 	const comboBox = routingComponent.useComboBox('ComboBox');
 	const listBox = routingComponent.useText('ListBox');
+
+	let showControls = $state(false);
 </script>
 
 <div class="prose">
@@ -79,4 +83,11 @@
 
 	<h2>List Box</h2>
 	<input type="text" name="" id="" bind:value={listBox.string} />
+
+
+	<h2>Hidable control (memory leak check)</h2>
+	<button onclick={() => showControls = !showControls}>{showControls ? 'Hide' : 'Show'}</button>
+	{#if showControls}
+		<HiddenControl qrwc={data.qrwc!} />
+	{/if}
 </div>

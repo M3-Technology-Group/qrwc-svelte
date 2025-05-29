@@ -1,6 +1,5 @@
-import type { Qrwc } from '@q-sys/qrwc';
+import type { Control, Qrwc } from '@q-sys/qrwc';
 import { fetchControl, type ControlMetadata } from './base-control.svelte.js'
-import type { ControlSubscriber } from '$lib/connection/control-subscriber.svelte.js';
 
 /**
  * Represents a button control that can be used in a Svelte component.
@@ -15,13 +14,13 @@ export interface TriggerControl extends ControlMetadata {
     trigger: () => void;
 }
 
-export function fetchTrigger(component:string, control:string, qrwcInstance:Qrwc | null, subscriber:ControlSubscriber): TriggerControl {
-    const ctl = fetchControl(component, control, qrwcInstance, subscriber);
+export function fetchTrigger(control:Control): TriggerControl {
+    const ctl = fetchControl(control);
     if(ctl.Type !== "Trigger") console.error("Attempted to use a trigger on a non-trigger control");
 
     const trigger = () => {
         if(ctl.Direction === "Read Only") {
-            console.error(`Attempted to trigger a read-only control ${control} in component ${component}`);
+            console.error(`Attempted to trigger a read-only control ${control.name} in component ${control.component.name}`);
             return;
         }
 

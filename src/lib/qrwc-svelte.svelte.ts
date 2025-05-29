@@ -1,7 +1,5 @@
-import type { Qrwc, Component as IComponent } from "@q-sys/qrwc";
 import { ConnectionManager } from "./connection/connection-manager.svelte.js";
 import type { ConnectionEvent, ConnectionOptions } from "./types/connection-options.svelte.js";
-import { ControlSubscriber } from "./connection/control-subscriber.svelte.js";
 import { getQrwcComponentList } from "./controls/global-metadata.svelte.js";
 import { Component } from "./components/component.js";
 
@@ -14,8 +12,6 @@ import { Component } from "./components/component.js";
  * @prop {$state<boolean>} isConnected - $state - True if the connection is "connected", false otherwise.
  */
 export class QrwcSvelte extends ConnectionManager {
-
-    private subscriber: ControlSubscriber = new ControlSubscriber();
 
     /**
      * Starts a new instance of the QRWC Wrapper. This will automatically connect to the specified Q-SYS core.
@@ -39,9 +35,7 @@ export class QrwcSvelte extends ConnectionManager {
             options = {coreIp: options}
         }
 
-        super(options, 
-            (qrwc: Qrwc) => {this.subscriber.propagateInitialValues(qrwc)}, 
-            (controlData: IComponent) => {this.subscriber.processControlEvent(controlData)});
+        super(options);
     }
     
 
@@ -78,7 +72,7 @@ export class QrwcSvelte extends ConnectionManager {
      * @returns component instance that provides metadata and access to controls within the component.
      * @throws {Error} If the component does not exist in the Q-SYS design or is excluded by the control filter.
      */
-    public useComponent = (componentId:string):Component => new Component(componentId, this.qrwc, this.subscriber);
+    public useComponent = (componentId:string):Component => new Component(componentId, this.qrwc);
 
     /**
      * Get the list of components in the current Q-SYS design.
@@ -100,7 +94,6 @@ export class QrwcSvelte extends ConnectionManager {
      * Any controls that were fetched will no longer be valid and will need to be re-fetched.
      */
     public disconnect = ():void => {
-        this.killConnection();
-        this.subscriber.flushSubscriptions();
+        this.killConnection();  
     }
 }

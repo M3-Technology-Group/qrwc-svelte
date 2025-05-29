@@ -1,11 +1,9 @@
-import type { ControlSubscriber } from '$lib/connection/control-subscriber.svelte.js';
 import { fetchControl } from '$lib/controls/base-control.svelte.js';
 import type { GenericControl } from '$lib/controls/base-control.svelte.js';
 import type { ButtonControl } from '$lib/controls/button.svelte.js';
 import { fetchButton } from '$lib/controls/button.svelte.js';
 import { fetchComboBox } from '$lib/controls/combo-box.svelte.js';
 import type { TextComboBoxControl } from '$lib/controls/combo-box.svelte.js';
-import { getQrwcControlList } from '$lib/controls/global-metadata.svelte.js';
 import { fetchKnob } from '$lib/controls/knob.svelte.js';
 import type { KnobControl } from '$lib/controls/knob.svelte.js';
 import { fetchText } from '$lib/controls/text.svelte.js';
@@ -26,7 +24,6 @@ import type { Qrwc, Component as IComponent} from '@q-sys/qrwc';
 export class Component {
 	private componentId: string;
 	private thisComponent: IComponent;
-	private subscriber: ControlSubscriber;
 	private qrwcInstance: Qrwc;
 
     /**
@@ -38,9 +35,8 @@ export class Component {
      * @param qrwcInstance - The QRWC Wrapper instance.
      * @param subscriber - The control subscriber.
      */
-	constructor(componentId: string, qrwcInstance: Qrwc | null, subscriber: ControlSubscriber) {
+	constructor(componentId: string, qrwcInstance: Qrwc | null) {
 		this.componentId = componentId;
-		this.subscriber = subscriber;
 
 		if (!qrwcInstance) {
 			throw new Error(
@@ -62,7 +58,7 @@ export class Component {
      * @returns {string} The name of the component.
      */
 	public get Name(): string {
-		return this.thisComponent.Name;
+		return this.thisComponent.name;
 	}
     
     /**
@@ -71,7 +67,7 @@ export class Component {
      * @returns {string} The ID of the component.
      */
 	public get Id(): string {
-		return this.thisComponent.ID;
+		return this.thisComponent.state.ID;
 	}
 
     /**
@@ -80,7 +76,7 @@ export class Component {
      * @returns {string} The type of the component.
      */
 	public get Type(): string {
-		return this.thisComponent.Type;
+		return this.thisComponent.state.Type;
 	}
 
 
@@ -89,7 +85,7 @@ export class Component {
      * 
      * @returns Array of control names in the specified component. Empty array if the component does not exist.
      */
-    public getControlList = ():string[] => getQrwcControlList(this.qrwcInstance, this.componentId);
+    public getControlList = ():string[] => Object.keys(this.thisComponent.controls)
 
 
 
@@ -109,7 +105,7 @@ export class Component {
 	 * @returns {GenericControl} object that can be used in a Svelte component.
 	 */
 	public useControl = (control: string): GenericControl =>
-		fetchControl(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchControl(this.thisComponent.controls[control]);
 
 	/**
 	 * Fetch and Subscribe to a Button control in a Q-SYS design.
@@ -121,7 +117,7 @@ export class Component {
 	 * @returns {ButtonControl} object that can be used in a Svelte component.
 	 */
 	public useButton = (control: string): ButtonControl =>
-		fetchButton(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchButton(this.thisComponent.controls[control]);
 
 	/**
 	 * Fetch a Trigger button control in a Q-SYS design.
@@ -133,7 +129,7 @@ export class Component {
 	 * @returns {TriggerControl} object that can be used in a Svelte component.
 	 */
 	public useTrigger = (control: string): TriggerControl =>
-		fetchTrigger(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchTrigger(this.thisComponent.controls[control]);
 
 	/**
 	 * Fetch and Subscribe to a Knob control in a Q-SYS design.
@@ -151,7 +147,7 @@ export class Component {
 	 * @returns { KnobControl } object that can be used in a Svelte component.
 	 */
 	public useKnob = (control: string): KnobControl =>
-		fetchKnob(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchKnob(this.thisComponent.controls[control]);
 
 	/**
 	 * Fetch and Subscribe to a Text control in a Q-SYS design.
@@ -164,7 +160,7 @@ export class Component {
 	 * @returns { TextControl } object that can be used in a Svelte component.
 	 */
 	public useText = (control: string): TextControl =>
-		fetchText(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchText(this.thisComponent.controls[control]);
 
 	/**
 	 * Fetch and subscribe to a combo box control in a Q-SYS design.
@@ -179,5 +175,5 @@ export class Component {
 	 * @returns {TextComboBoxControl} object that can be used in a Svelte component.
 	 */
 	public useComboBox = (control: string): TextComboBoxControl =>
-		fetchComboBox(this.componentId, control, this.qrwcInstance, this.subscriber);
+		fetchComboBox(this.thisComponent.controls[control]);
 }

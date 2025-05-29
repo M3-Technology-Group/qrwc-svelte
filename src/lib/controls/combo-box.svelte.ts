@@ -1,6 +1,5 @@
-import type { Qrwc } from '@q-sys/qrwc';
+import type { Control, Qrwc } from '@q-sys/qrwc';
 import { fetchControl, type ControlMetadata } from './base-control.svelte.js'
-import type { ControlSubscriber } from '$lib/connection/control-subscriber.svelte.js';
 
 /**
  * Represents a text control that can be used in a Svelte component.
@@ -20,14 +19,14 @@ export interface TextComboBoxControl extends ControlMetadata {
 }
 
 
-export function fetchComboBox(component:string, control:string, qrwcInstance:Qrwc | null, subscriber:ControlSubscriber):TextComboBoxControl {
-    const ctl = fetchControl(component, control,qrwcInstance, subscriber, (update) => {
-        choices = update.getMetaProperty("Choices") as unknown as string[] ?? [];
+export function fetchComboBox(control:Control):TextComboBoxControl {
+    const ctl = fetchControl(control, (update) => {
+        choices = update.Choices ?? [];
     });
     if(ctl.Type !== "Text") 
-        console.error(`Attempted to use a ComboBox on a non-text control: ${control} in component ${component} sent type: ${ctl.Type}`);
+        console.error(`Attempted to use a ComboBox on a non-text control: ${control.name} in component ${control.component.name} sent type: ${ctl.Type}`);
 
-    let choices = $state<string[]>(ctl.rawControl?.getMetaProperty("Choices") as unknown as string[] ?? []);
+    let choices = $state<string[]>(control.state.Choices ?? []);
 
     //This warning has nto bene reliable, so it has been removed.
     // if(choices.length === 0)
@@ -35,7 +34,7 @@ export function fetchComboBox(component:string, control:string, qrwcInstance:Qrw
 
     const setText = (val:string) => {
         if(ctl.Direction === "Read Only") {
-            console.error(`Attempted to set a read-only control ${control} in component ${component}`);
+            console.error(`Attempted to set a read-only control ${control.name} in component ${control.component.name}`);
             return;
         }
 
@@ -44,7 +43,7 @@ export function fetchComboBox(component:string, control:string, qrwcInstance:Qrw
 
     const setOption = (val:number) => {
         if(val < 0 || val >= choices.length) {
-            console.error(`Attempted to set ComboBox ${component}, ${control} to an out-of-range value`);
+            console.error(`Attempted to set ComboBox ${control.component.name}, ${control.name} to an out-of-range value`);
             setText("");
             return;
         }
