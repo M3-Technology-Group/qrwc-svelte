@@ -18,6 +18,8 @@ export class ConnectionManager {
 
 	protected connectionAttempts = $state<number>(0);
 	protected connectionState = $state<ConnectionEvent>('disconnected');
+	protected activeCoreState = $state< "primary" | "redundant" >("primary");
+	protected coreIpState = $state<string>("");
 
 	/**
 	 * Create a new QRWC Instance and connect to the QRWC WebSocket
@@ -66,8 +68,12 @@ export class ConnectionManager {
 				console.log(
 					`QRWC Attempting connection to redundant core at ${this.options.redundantCoreIp}`
 				);
+				this.activeCoreState = 'redundant';
 				coreIp = this.options.redundantCoreIp;
+			} else {
+				this.activeCoreState = 'primary';
 			}
+			this.coreIpState = coreIp;
 
 			this.qrwc = await this.startAndSubscribe();
 
@@ -130,7 +136,7 @@ export class ConnectionManager {
 			pollingInterval: this.options.poleInterval ?? 35
 		};
 
-		const qrwc = await createQrwcInstance(this.options.coreIp, opts, this.options.secure);
+		const qrwc = await createQrwcInstance(this.coreIpState, opts, this.options.secure);
 
 		return qrwc;
 	}

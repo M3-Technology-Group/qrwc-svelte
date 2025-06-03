@@ -56,8 +56,6 @@
 		"vitest": "^2.0.4"
 	},
 	"dependencies": {
-		"@q-sys/qrwc": "^0.4.1-beta",
-		"i": "^0.3.7",
-		"npm": "^11.4.1"
+		"@q-sys/qrwc": "^0.4.1-beta"
 	}
 }

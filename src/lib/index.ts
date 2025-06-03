@@ -1,5 +1,5 @@
 export type { ConnectionOptions, ConnectionEvent } from './types/connection-options.svelte.js'
-export type { ControlDirection, ControlType } from './connection/control-data-parser.svelte.js'
+export type { ControlDirection, allControlDirections, ControlType, allControlTypes } from './connection/control-data-parser.svelte.js'
 export type { ControlMetadata, GenericControl } from './controls/base-control.svelte.js'
 export type { ButtonControl } from './controls/button.svelte.js'
 export type { TriggerControl } from './controls/trigger.svelte.js'

@@ -88,19 +88,24 @@ export function fetchControl(control:Control, controlUpdatedCallback?:(arg0:Cont
 
     const setPosition = (val:number | undefined) => {
         console.error("NOT IMPLEMENTED: Position is not settable in current version");
-        /*
-        if(!qrwcInstance) return;
+        
         try {
-            const controlObj = qrwcInstance.components[component]?.Controls?.[control];
-            if (controlObj && val !== undefined) {
-                controlObj.Position = val;
+            if(control.state && control.state.ValueMax !== undefined && val !== undefined && control.state.ValueMin !== undefined) {
+
+                if(val > 1 || val < 0) {
+                    console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position to ${val}. Value must be between 0 and 1.`);
+                } else {
+                    const scaledValue = control.state.ValueMin + (val * (control.state.ValueMax - control.state.ValueMin));
+                    control.update(scaledValue);
+                }
+
             } else {
-                console.error(`Control ${control} in component ${component} not found`);
+                console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position`);
             }
         }
         catch {
-            console.error(`Error setting position for control ${control} in component ${component}`);
-        }*/
+            console.error(`Error setting position for control ${control.name} in component ${control.component.name}`);
+        }
     }
 
     const setString = (val:string | undefined) => {

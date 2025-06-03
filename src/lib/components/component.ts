@@ -33,7 +33,6 @@ export class Component {
      * 
      * @param componentId - The ID (Code Name) of the component in Q-SYS Designer.
      * @param qrwcInstance - The QRWC Wrapper instance.
-     * @param subscriber - The control subscriber.
      */
 	constructor(componentId: string, qrwcInstance: Qrwc | null) {
 		this.componentId = componentId;

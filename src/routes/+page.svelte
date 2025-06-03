@@ -55,6 +55,9 @@
 	<h2>Gain Knob</h2>
 	<input type="range" min={gainKnob.valueMin} max={gainKnob.valueMax} bind:value={gainKnob.value} />
 
+	<h2>Position Knob</h2>
+	<input type="range" min=0 max=1 step="0.01" bind:value={gainKnob.position} />
+
 	<h2>Pan Knob</h2>
 	<input
 		type="range"

@@ -62,6 +62,18 @@ export class QrwcSvelte extends ConnectionManager {
      */
     public connectionAttemptCount = $derived<number>(this.connectionAttempts);
 
+    /**
+     * $state The current active core.
+     * Can be "primary" or "redundant".
+     * This is a read-only property.
+     */
+    public activeCore = $derived<"primary" | "redundant">(this.activeCoreState);
+
+    /**
+     * $state The current active core IP.
+     * This is a read-only property.
+     */
+    public coreIp = $derived<string>(this.coreIpState);
 
     /**
      * Fetch a specific component in the current Q-SYS design.

@@ -9,7 +9,9 @@ export const prerender = false;
 export const load: LayoutLoad = async ({ params }) => {
 	if (browser) {
 		return {
-			qrwc: new QrwcSvelte("172.18.1.82")
+			qrwc: new QrwcSvelte({
+				coreIp: "172.18.1.82"
+			})
 		};
 	}
 };
