@@ -2,6 +2,9 @@
 	"name": "qrwc-svelte",
 	"version": "1.0.0",
 	"license": "Apache-2.0",
+	"description": "Use Q-SYS Controls with Svelte 5 Runes",
+	"repository": "github:M3-Technology-Group/qrwc-svelte",
+	"homepage": "https://m3-technology-group.github.io/qrwc-svelte/",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",

@@ -16,6 +16,10 @@ Note: This library is **not** sponsored, supported or endorsed by QSC, LLC. Q-SY
 - ✨ Full TypeScript Support - Better code completion and error checking.
 - ✅ Fully Open Source - No licensing fees, no restrictions.
 
+## Additional Resources
+ - Full Documentation (including examples) : https://m3-technology-group.github.io/qrwc-svelte/
+ - Video Tutorial: https://youtu.be/Tk9L1A867KY
+
 ## Getting Started
 
 ### Prerequisites
