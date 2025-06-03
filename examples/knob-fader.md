@@ -75,6 +75,29 @@ The optional style block is used to make the fader vertical.
 
 The string property of the fader can be used to display the current value of the fader. This will update as the fader is moved or the position is set. The units of the fader are determined by the control on the Core, and are displayed in the string.
 
+## Fader using Value with Min/Max
+```svelte
+<script lang="ts">
+  import { qrwcSvelte } from "./lib/qrwc-svelte";
+
+  const TestControlsComponent = qrwcSvelte.useComponent("TestControls");
+
+  const fader = TestControlsComponent.useKnob("fader");
+</script>
+
+<input type="range" min={fader.valueMin} max={fader.valueMax} bind:value={fader.value} />
+
+<style>
+  input[type=range] {
+    writing-mode: vertical-lr;
+    direction: rtl;
+  }
+</style>
+```
+
+The @Q-SYS/qrwc library also provides control metadata that is also exposed by this library. For knob type controls, this includes the min and max values that can be used to set the range of the fader.
+
+
 ## Numeric Entry
 
 ```svelte
