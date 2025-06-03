@@ -1,4 +1,4 @@
-import type { ControlDecorator } from '@q-sys/qrwc/dist/managers/components/ControlDecorator.js';
+import type { Control } from '@q-sys/qrwc';
 
 export const allControlDirections = ['Read/Write', 'Read Only', 'Write Only'] as const;
 export type ControlDirection = (typeof allControlDirections)[number] | undefined;
@@ -10,11 +10,11 @@ export type ControlDirection = (typeof allControlDirections)[number] | undefined
  * @returns "Read/Write" or "Read Only" or "Write Only" or undefined
  */
 export function getDirectionProperty(
-	controlData: ControlDecorator | undefined
+	controlData: Control | undefined
 ): ControlDirection | undefined {
 	if (!controlData) return undefined;
 	try {
-		const direction = controlData.getMetaProperty('Direction') as string | undefined;
+		const direction = controlData.state.Direction;
 
 		if (!direction) return undefined;
 
@@ -35,10 +35,10 @@ export type ControlType = (typeof allControlTypes)[number] | undefined;
  * @param controlData Control Decorator object
  * @returns
  */
-export function getTypeProperty(controlData: ControlDecorator | undefined): ControlType {
+export function getTypeProperty(controlData: Control | undefined): ControlType {
 	if (!controlData) return undefined;
 	try {
-		const type = controlData.getMetaProperty('Type') as string | undefined;
+		const type = controlData.state.Type
 
 		if (!type) return undefined;
 

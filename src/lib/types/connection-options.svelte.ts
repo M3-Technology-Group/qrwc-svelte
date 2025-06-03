@@ -1,4 +1,4 @@
-import type { IComponentFilter } from "@q-sys/qrwc/dist/index.interface.js";
+import type { IStartOptions } from "@q-sys/qrwc";
 
 /**
  * @param coreIp - The IP of the core system to connect to. In a Primary/Secondary configuration, this should be the IP of the primary core.
@@ -12,7 +12,7 @@ export interface ConnectionOptions {
     redundantCoreIp?: string;
     secure?: boolean;
     poleInterval?: number;
-    controlFilter?: string[] | IComponentFilter;
+    controlFilter?: string[] | IStartOptions['componentFilter'];
 }
 
 /**

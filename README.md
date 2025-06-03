@@ -49,7 +49,7 @@ npm install qrwc-svelte
 #### Instantiating the QRWC-Svelte Instance
 It is recommended to create a file in the `lib` directory to provide the QRWC-Svelte instance to all components.
 
-Create a new file in the `lib` directory called `svelte-qrwc.ts`:
+Create a new file in the `lib` directory called `qrwc.ts`:
 ```typescript
 import { QrwcSvelte } from 'qrwc-svelte';
 
@@ -66,7 +66,7 @@ QrwcSvelte provides the property `isConnected` as a `$state<boolean>` rune that 
 
 ```svelte
 <script lang="ts">
-  import { qrwcSvelte } from './lib/svelte-qrwc';
+  import { qrwcSvelte } from './lib/qrwc';
 </script>
 
 {#if qrwcSvelte.isConnected}
@@ -86,7 +86,7 @@ There are two steps to use a Q-SYS control.
 
 ```typescript
 //connected qrwc svelte instance
-import { qrwcSvelte } from "./lib/qrwc-svelte";
+import { qrwcSvelte } from "./lib/qrwc";
 
 const myComponent = qrwcSvelte.useComponent('my_component')
 ```
@@ -100,7 +100,7 @@ For example, to use a button control with the component name `testControls` and 
 create a file named `Button.svelte`:
 ```svelte
 <script lang="ts">
-  import { qrwcSvelte } from "./lib/qrwc-svelte";
+  import { qrwcSvelte } from "./lib/qrwc";
 
   const testControlsComponent = qrwcSvelte.useComponent("testControls")
   const toggleButton = testControlsComponent.useButton("toggleButton");
@@ -118,7 +118,7 @@ In this example, the button will change color based on the state of the button c
 Now that you have created the button component, you can use it in your main App.svelte file:
 ```svelte
 <script lang="ts">
-  import { qrwcSvelte } from './lib/qrwc-svelte';
+  import { qrwcSvelte } from './lib/qrwc';
   import Button from './Button.svelte';
 </script>
 
@@ -153,7 +153,7 @@ For the example above, the `state` control of the flipflop can be accessed with 
 ```svelte
 <script lang="ts">
   //Shared QRWC-Svelte instance - see above
-  import { qrwcSvelte } from "./lib/qrwc-svelte";
+  import { qrwcSvelte } from "./lib/qrwc";
 
   //get the component instance
   const flipFlopComponent = qrwcSvelte.useComponent("Flip-Flop")
@@ -168,7 +168,7 @@ For the example above, the `state` control of the flipflop can be accessed with 
 You can access as many controls as the component contains from a single component instance
 ```svelte
 <script lang="ts">
-  import { qrwcSvelte } from "./lib/qrwc-svelte";
+  import { qrwcSvelte } from "./lib/qrwc";
   const flipFlopComponent = qrwcSvelte.useComponent("Flip-Flop")
 
 
@@ -242,7 +242,7 @@ This example +layout.ts file demonstrates how to create the QRWC-Svelte instance
 ```typescript
 //src/routes/+layout.ts
 
-import { QrwcSvelte } from '$lib/index.js';
+import { QrwcSvelte } from 'qrwc-svelte';
 import type { LayoutLoad } from './$types.js';
 import { PUBLIC_COREIP } from '$env/static/public';
 import { browser } from '$app/environment';

@@ -1,7 +1,5 @@
 import { getDirectionProperty, getTypeProperty, type ControlDirection, type ControlType } from "$lib/connection/control-data-parser.svelte.js";
-import type { ControlSubscriber } from "$lib/connection/control-subscriber.svelte.js";
-import type { Qrwc } from "@q-sys/qrwc";
-import type { ControlDecorator } from "@q-sys/qrwc/dist/managers/components/ControlDecorator.js";
+import type { Control } from "@q-sys/qrwc";
 
 /**
  * Represents a generic control that can be used in a Svelte component.
@@ -33,7 +31,7 @@ export interface ControlMetadata {
     ControlName: string;
     Direction: ControlDirection;
     Type: ControlType;
-    rawControl: ControlDecorator | undefined;
+    rawControl: Control | undefined;
 }
 
 /**
@@ -45,21 +43,18 @@ export interface ControlMetadata {
  * @param controlUpdatedCallback Optional callback that is invoked when the control is updated by the Core.
  * @returns {GenericControl} object that can be used in a Svelte component (or used to build a more specific control).
  */
-export function fetchControl(component:string, control:string, qrwcInstance:Qrwc | null, subscriber:ControlSubscriber, controlUpdatedCallback?:(arg0:ControlDecorator)=>void): GenericControl {
-    if(!qrwcInstance) console.error("Attempted to access control prior to connection to Qrwc, using default values.");
+export function fetchControl(control:Control, controlUpdatedCallback?:(arg0:Control['state'])=>void): GenericControl {
 
-    let controlData: ControlDecorator | undefined = qrwcInstance?.components[component]?.Controls?.[control] ?? undefined;
-    
-    let ControlName = controlData?.Name ?? "";
-    let Direction:ControlDirection= getDirectionProperty(controlData);
-    let Type:ControlType = getTypeProperty(controlData);
-    let value = $state<string | number | boolean | undefined>(controlData?.Value ?? undefined);
-    let position = $state<number | undefined>(controlData?.Position ?? undefined);
-    let string = $state<string | undefined>(controlData?.String ?? undefined);
+    let ControlName = control.name;
+    let Direction:ControlDirection= getDirectionProperty(control);
+    let Type:ControlType = getTypeProperty(control);
+    let value = $state<string | number | boolean | undefined>(control.state.Value);
+    let position = $state<number | undefined>(control.state.Position);
+    let string = $state<string | undefined>(control.state.String);
 
     $effect(() => {
-        const subscriptionId = subscriber.subscribeControl(component, control, (ctl) => {
 
+        const listener = (ctl: Control['state']) => {
             value = ctl.Value;
             position = ctl.Position;
             string = ctl.String;
@@ -68,57 +63,61 @@ export function fetchControl(component:string, control:string, qrwcInstance:Qrwc
                     controlUpdatedCallback(ctl);
             }
             catch (e) {
-                console.error(`Error updating control ${control} in component ${component} due to ${e}`);
+                console.error(`Error updating control ${control} in component ${control.component.name} due to ${e}`);
             }
-        });
+        }
+        control.on('update', listener);
 
         return () => {
-            subscriber.unsubscribeControl(subscriptionId);
+            control.removeListener('update', listener);
         }
     });
 
     const setValue = (val:string | number | boolean | undefined) => {
-        if(!qrwcInstance) return;
         try {
-            const controlObj = qrwcInstance.components[component]?.Controls?.[control];
-            if (controlObj && val !== undefined) {
-                controlObj.Value = val;
+            if (control.state && val !== undefined) {
+                control.update(val);
             } else {
-                console.error(`Control ${control} in component ${component} not found`);
+                console.error(`Control ${control.name} in component ${control.component.name} not found`);
             }
         }
         catch {
-            console.error(`Error setting value for control ${control} in component ${component}`);
+            console.error(`Error setting value for control ${control.name} in component ${control.component.name}`);
         }
     };
 
     const setPosition = (val:number | undefined) => {
-        if(!qrwcInstance) return;
+        console.error("NOT IMPLEMENTED: Position is not settable in current version");
+        
         try {
-            const controlObj = qrwcInstance.components[component]?.Controls?.[control];
-            if (controlObj && val !== undefined) {
-                controlObj.Position = val;
+            if(control.state && control.state.ValueMax !== undefined && val !== undefined && control.state.ValueMin !== undefined) {
+
+                if(val > 1 || val < 0) {
+                    console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position to ${val}. Value must be between 0 and 1.`);
+                } else {
+                    const scaledValue = control.state.ValueMin + (val * (control.state.ValueMax - control.state.ValueMin));
+                    control.update(scaledValue);
+                }
+
             } else {
-                console.error(`Control ${control} in component ${component} not found`);
+                console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position`);
             }
         }
         catch {
-            console.error(`Error setting position for control ${control} in component ${component}`);
+            console.error(`Error setting position for control ${control.name} in component ${control.component.name}`);
         }
     }
 
     const setString = (val:string | undefined) => {
-        if(!qrwcInstance) return;
         try {
-            const controlObj = qrwcInstance.components[component]?.Controls?.[control];
-            if (controlObj && val !== undefined) {
-                controlObj.String = val;
+            if (control.state && val !== undefined) {
+                control.update(val);
             } else {
-                console.error(`Control ${control} in component ${component} not found`);
+                console.error(`Control ${control.name} in component ${control.component.name} not found`);
             }
         }
         catch {
-            console.error(`Error setting string for control ${control} in component ${component}`);
+            console.error(`Error setting string for control ${control.name} in component ${control.component.name}`);
         }
     }
 
@@ -126,7 +125,7 @@ export function fetchControl(component:string, control:string, qrwcInstance:Qrwc
         get ControlName() { return ControlName },
         get Direction() { return Direction },
         get Type() { return Type },
-        get rawControl() { return controlData},
+        get rawControl() { return control},
         get value() { return value },
         get position() { return position },
         get string() { return string },
