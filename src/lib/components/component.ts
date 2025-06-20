@@ -103,8 +103,12 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns {GenericControl} object that can be used in a Svelte component.
 	 */
-	public useControl = (control: string): GenericControl =>
-		fetchControl(this.thisComponent.controls[control]);
+	public useControl = (control: string): GenericControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchControl(this.thisComponent.controls[control]);
+	}
 
 	/**
 	 * Fetch and Subscribe to a Button control in a Q-SYS design.
@@ -115,8 +119,12 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns {ButtonControl} object that can be used in a Svelte component.
 	 */
-	public useButton = (control: string): ButtonControl =>
-		fetchButton(this.thisComponent.controls[control]);
+	public useButton = (control: string): ButtonControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchButton(this.thisComponent.controls[control]);
+	}
 
 	/**
 	 * Fetch a Trigger button control in a Q-SYS design.
@@ -127,8 +135,12 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns {TriggerControl} object that can be used in a Svelte component.
 	 */
-	public useTrigger = (control: string): TriggerControl =>
-		fetchTrigger(this.thisComponent.controls[control]);
+	public useTrigger = (control: string): TriggerControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchTrigger(this.thisComponent.controls[control]);
+	}
 
 	/**
 	 * Fetch and Subscribe to a Knob control in a Q-SYS design.
@@ -145,8 +157,12 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns { KnobControl } object that can be used in a Svelte component.
 	 */
-	public useKnob = (control: string): KnobControl =>
-		fetchKnob(this.thisComponent.controls[control]);
+	public useKnob = (control: string): KnobControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchKnob(this.thisComponent.controls[control]);
+	}
 
 	/**
 	 * Fetch and Subscribe to a Text control in a Q-SYS design.
@@ -158,8 +174,12 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns { TextControl } object that can be used in a Svelte component.
 	 */
-	public useText = (control: string): TextControl =>
-		fetchText(this.thisComponent.controls[control]);
+	public useText = (control: string): TextControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchText(this.thisComponent.controls[control]);
+	}
 
 	/**
 	 * Fetch and subscribe to a combo box control in a Q-SYS design.
@@ -173,6 +193,10 @@ export class Component {
 	 * @param control Control name inside the component to use.
 	 * @returns {TextComboBoxControl} object that can be used in a Svelte component.
 	 */
-	public useComboBox = (control: string): TextComboBoxControl =>
-		fetchComboBox(this.thisComponent.controls[control]);
+	public useComboBox = (control: string): TextComboBoxControl => {
+		if(!Object.keys(this.thisComponent.controls).includes(control)) {
+			throw new Error(`Control ${control} not found in component ${this.componentId}`);
+		}
+		return fetchComboBox(this.thisComponent.controls[control]);
+	}
 }
