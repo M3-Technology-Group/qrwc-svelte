@@ -93,6 +93,7 @@ export class ConnectionManager {
 		}
 	}
 
+	private activeConnectionTimeout: number | null = null;
 	private handleDisconnect(): void {
 		if (this.connectionState === 'disconnected') return;
 
@@ -110,11 +111,16 @@ export class ConnectionManager {
 		if (!this.allowReconnect) return;
 
 		console.log(`QRWC Connection lost. Re-connection attempt: ${this.connectionAttempts}`);
-		setTimeout(
+		if (this.activeConnectionTimeout) {
+			clearTimeout(this.activeConnectionTimeout);
+			this.activeConnectionTimeout = null;
+		}
+		this.activeConnectionTimeout = setTimeout(
 			() => {
+				this.activeConnectionTimeout = null;
 				this.connectToQrwc();
 			},
-			this.connectionAttempts > 5 ? 15000 : 1000
+			this.connectionAttempts > 5 ? 25000 : 10000
 		);
 	}
 
