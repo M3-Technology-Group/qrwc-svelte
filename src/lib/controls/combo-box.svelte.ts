@@ -28,10 +28,6 @@ export function fetchComboBox(control:Control):TextComboBoxControl {
 
     let choices = $state<string[]>(control.state.Choices ?? []);
 
-    //This warning has nto bene reliable, so it has been removed.
-    // if(choices.length === 0)
-    //     console.warn(`ComboBox ${component}, ${control} has no choices`);
-
     const setText = (val:string) => {
         if(ctl.Direction === "Read Only") {
             console.error(`Attempted to set a read-only control ${control.name} in component ${control.component.name}`);

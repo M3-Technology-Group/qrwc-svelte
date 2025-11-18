@@ -1,6 +1,6 @@
 {
 	"name": "qrwc-svelte",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"license": "Apache-2.0",
 	"description": "Use Q-SYS Controls with Svelte 5 Runes",
 	"repository": "github:M3-Technology-Group/qrwc-svelte",
@@ -17,7 +17,7 @@
 		"lint": "prettier --check .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"docs": "typedoc"
+		"docs": "typedoc && cp llms.md docs/llms.md"
 	},
 	"files": [
 		"dist",
@@ -59,6 +59,6 @@
 		"vitest": "^2.0.4"
 	},
 	"dependencies": {
-		"@q-sys/qrwc": "^0.4.1-beta"
+		"@q-sys/qrwc": "^0.5.0-beta"
 	}
 }

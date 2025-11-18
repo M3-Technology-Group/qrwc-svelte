@@ -68,8 +68,19 @@ export function fetchControl(control:Control, controlUpdatedCallback?:(arg0:Cont
         }
         control.on('update', listener);
 
+        const errorListener = (error:any) => {
+            console.error(`QRWC reported an error for control ${control.name} in component ${control.component.name} due to ${error}`);
+        }
+        control.on('error', errorListener);
+
         return () => {
-            control.removeListener('update', listener);
+            try {
+                control.removeListener('update', listener);
+                control.removeListener('error', errorListener);
+            }
+            catch (e) {
+                console.error(`Error removing listener for control ${control} in component ${control.component.name} due to ${e}`);
+            }
         }
     });
 
@@ -87,20 +98,11 @@ export function fetchControl(control:Control, controlUpdatedCallback?:(arg0:Cont
     };
 
     const setPosition = (val:number | undefined) => {
-        console.error("NOT IMPLEMENTED: Position is not settable in current version");
-        
         try {
-            if(control.state && control.state.ValueMax !== undefined && val !== undefined && control.state.ValueMin !== undefined) {
-
-                if(val > 1 || val < 0) {
-                    console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position to ${val}. Value must be between 0 and 1.`);
-                } else {
-                    const scaledValue = control.state.ValueMin + (val * (control.state.ValueMax - control.state.ValueMin));
-                    control.update(scaledValue);
-                }
-
+            if (control.state && val !== undefined) {
+                control.update({ Position: val });
             } else {
-                console.error(`Control ${control.name} in component ${control.component.name} does not support setting of position`);
+                console.error(`Control ${control.name} in component ${control.component.name} not found`);
             }
         }
         catch {
@@ -111,7 +113,8 @@ export function fetchControl(control:Control, controlUpdatedCallback?:(arg0:Cont
     const setString = (val:string | undefined) => {
         try {
             if (control.state && val !== undefined) {
-                control.update(val);
+                //Setting as String broken in QRWC 0.5.0
+                control.update({ Value: val });
             } else {
                 console.error(`Control ${control.name} in component ${control.component.name} not found`);
             }
