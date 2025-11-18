@@ -20,12 +20,23 @@ Note: This library is **not** sponsored, supported or endorsed by QSC, LLC. Q-SY
  - Full Documentation (including examples) : https://m3-technology-group.github.io/qrwc-svelte/
  - Video Tutorial: https://youtu.be/Tk9L1A867KY
 
+
+## LLM Documentation
+ - LLM friendly documentation is available at https://m3-technology-group.github.io/qrwc-svelte/llms.md
+ 
+## Version History
+- 1.1.0 - Updated to support QRWC 0.5.0-beta. Position Setter uses direct position setter API instead of scaling value.
+- 1.0.2 - Added more descriptive error messages for control not found errors. Changed startup logic to ensure that controls are not subscribed to until the core is ready to provide updates.
+- 1.0.1 - Initial release
+
+
 ## Getting Started
 
 ### Prerequisites
 - Q-SYS Designer 10.0 or later
 - Q-SYS Hardware or V-Core (QRWC not supported in emulation mode)
 - Q-SYS Components used **MUST** have `Script Access` property set to `All` or `External` in Q-SYS Designer.
+- QRWC must be enabled on the core (Core Manager > Network > Services > Management > Q-SYS Remote WebSocket Control)
 
 ### Project Creation
 It is **strongly recommended** that you start with a plane Svelte project through Vite. (as opposed to SvelteKit - see the section on [SvelteKit](#sveltekit) below).

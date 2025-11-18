@@ -107,7 +107,7 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchControl(this.thisComponent.controls[control]);
+		return fetchControl(this.thisComponent.controls[control]!);
 	}
 
 	/**
@@ -123,7 +123,7 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchButton(this.thisComponent.controls[control]);
+		return fetchButton(this.thisComponent.controls[control]!);
 	}
 
 	/**
@@ -139,7 +139,7 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchTrigger(this.thisComponent.controls[control]);
+		return fetchTrigger(this.thisComponent.controls[control]!);
 	}
 
 	/**
@@ -161,7 +161,7 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchKnob(this.thisComponent.controls[control]);
+		return fetchKnob(this.thisComponent.controls[control]!);
 	}
 
 	/**
@@ -178,7 +178,7 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchText(this.thisComponent.controls[control]);
+		return fetchText(this.thisComponent.controls[control]!);
 	}
 
 	/**
@@ -197,6 +197,6 @@ export class Component {
 		if(!Object.keys(this.thisComponent.controls).includes(control)) {
 			throw new Error(`Control ${control} not found in component ${this.componentId}`);
 		}
-		return fetchComboBox(this.thisComponent.controls[control]);
+		return fetchComboBox(this.thisComponent.controls[control]!);
 	}
 }
