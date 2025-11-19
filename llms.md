@@ -4,16 +4,7 @@
 
 qrwc-svelte is a Svelte 5 wrapper library for the @q-sys/qrwc package that provides reactive control objects for Q-SYS components using Svelte 5 Runes. It enables real-time bidirectional communication between Svelte applications and Q-SYS cores via WebSocket connections.
 
-**Key Features:**
-- Reactive state management using Svelte 5 Runes ($state, $derived)
-- Automatic connection management with reconnection support
-- Redundant core failover support
-- TypeScript support with full type definitions
-- Simple API designed for A/V programmers
-
 **Version:** 1.1.0 (supports QRWC 0.5.0-beta)
-
-**Note:** This library is not sponsored, supported, or endorsed by QSC, LLC.
 
 ## Prerequisites
 
@@ -50,7 +41,7 @@ Create a file in the `src/lib` directory to provide the QRWC-Svelte instance glo
 ```typescript
 import { QrwcSvelte } from 'qrwc-svelte';
 
-// Simple connection with IP address
+// Simple connection with IP address (Recommended)
 export const qrwcSvelte = new QrwcSvelte("192.168.1.100");
 
 // Or with connection options
@@ -167,26 +158,32 @@ Represents a Q-SYS component instance.
   - Generic control accessor for unsupported control types
   - Returns object with `value`, `position`, `string` properties
   - Properties may be `undefined` if control doesn't support them
+  - Suitable for all control types
 
 - **`useButton(control: string): ButtonControl`**
   - Fetches a button control (Boolean type)
   - Returns ButtonControl with `state` and `toggle()` method
+  - Suitable for `Boolean` control types
 
 - **`useTrigger(control: string): TriggerControl`**
   - Fetches a trigger control (write-only, no feedback)
   - Returns TriggerControl with `trigger()` method
+  - Suitable for `Trigger` control types
 
 - **`useKnob(control: string): KnobControl`**
   - Fetches a knob/fader control (Float, Integer, Time, or Array type)
   - Returns KnobControl with `value`, `position`, `string`, and min/max properties
+  - Suitable for `Integer`, `Float`, `Time`, and `Array` controls
 
 - **`useText(control: string): TextControl`**
   - Fetches a text control
   - Returns TextControl with `string` property
+  - Suitable for `Text` controls
 
 - **`useComboBox(control: string): TextComboBoxControl`**
   - Fetches a combo box control (Text type with choices)
   - Returns TextComboBoxControl with `string`, `option`, and `choices` properties
+  - Suitable for `Text` controls
 
 **All use methods throw errors if:**
 - Control doesn't exist in the component
@@ -194,15 +191,8 @@ Represents a Q-SYS component instance.
 - Connection is not established
 
 **Read Only Controls: LEDs, etc.**
-Read only controls such as LEDs and Level Meters are supported by using the use method that most closely matches the control type. The direction property will be "Read Only".
-- useButton() for LEDs
-- useKnob() for Level Meters
-- useText() for Text Displays
+Read only controls such as LEDs and Level Meters are supported by using the use method that most closely matches the control type. The direction property will be "Read Only". Note the Types mentioned above to determine which use method to use.
 
-**Example:**
-```svelte
-<script lang="ts">
-  import { qrwcSvelte } from "./lib/qrwc";
 ### Control Types
 
 #### ButtonControl
@@ -1001,7 +991,15 @@ Each instance is independent and can access different controls.
 4. Set to "All" or "External"
 5. Note the "Code Name" - this is used in `useComponent()`
 
+### Finding Component Names
+
+If you are using the svelte-qrwc-mcp tool, then you can run the tool `get-components`
+
 ### Finding Control Names
+
+If you are using the svelte-qrwc-mcp tool, then you can run the tool `get-controls`
+
+If you are not using the svelte-qrwc-mcp tool, the user can
 
 1. Select component in Q-SYS Designer
 2. Go to Tools menu
@@ -1019,13 +1017,6 @@ Each instance is independent and can access different controls.
 ## Additional Resources
 
 - **Full Documentation:** https://m3-technology-group.github.io/qrwc-svelte/
-- **Video Tutorial:** https://youtu.be/Tk9L1A867KY
 - **Q-SYS Help:** https://help.qsys.com/
 - **@q-sys/qrwc Documentation:** See node_modules/@q-sys/qrwc for underlying library docs
-
-## Version History
-
-- **1.1.0** - Updated to support QRWC 0.5.0-beta. Position Setter uses direct position setter API instead of scaling value.
-- **1.0.2** - Added more descriptive error messages for control not found errors. Changed startup logic to ensure that controls are not subscribed to until the core is ready to provide updates.
-- **1.0.1** - Initial release
 
